@@ -25,22 +25,28 @@ public class AuthController {
     RoleRepository roleRepository;
     @Autowired
     PasswordEncoder encoder;
+
     @PostMapping
-    public User signUp(@RequestBody User userRequest){
-        User user1=new User(userRequest.getName(),
-                encoder.encode( userRequest.getPassword()), userRequest.getEmail());
-        Set<Role> rolesRequest=userRequest.getRoles();
-        Set<Role> roles=new HashSet<>();
+    public User signUp(@RequestBody User userRequest) {
+        User user1 = new User(userRequest.getUsername(),
+                encoder.encode(userRequest.getPassword()), userRequest.getEmail());
+        Set<Role> rolesRequest = userRequest.getRoles();
+        Set<Role> roles = new HashSet<>();
         user1.setRoles(rolesRequest);
         return userRepository.save(user1);
 
         for (Role role : rolesRequest)
-        switch (role){
-            case "admin":
-                roles.add(roleRepository.findByName(ERole.ROLE_ADMIN));
-
-
-        }
+            switch (role) {
+                case "admin":
+                    roles.add(roleRepository.findByName(ERole.ROLE_ADMIN));
+                    break;
+                case "user":
+                    roles.add(roleRepository.findByName(ERole.ROLE_USER));
+                    break;
+                case "moderator":
+                    roles.add(roleRepository.findByName(ERole.ROLE_MODERATOR));
+                    break;
+            }
 
 
     }
